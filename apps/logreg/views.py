@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from apps.users.models import User 
+from ..users.models import User 
 
 def is_logged_in(request):
     return request.session.get('logged_in', False)
