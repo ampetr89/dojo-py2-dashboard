@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+</head>
+<body>
+    <div class="messages">
+        {% for message in messages %}
+            <p class="{{message.tags}}"> {{message}}</p>
+        {% endfor %}
+    </div>
+    
+
+    <form action="{% url 'logreg:process' 'registration' %}" method="POST">
+        {% csrf_token %}
+        <p>First Name</p>
+        <p><input type="text" name="first_name"></p>
+
+        <p>Last Name</p>
+        <p><input type="text" name="last_name"></p>
+
+        <p>Email</p>
+        <p><input type="text" name="email"></p>
+
+        <p>Password</p>
+        <p><input type="password" name="password"></p>
+        <p>Confirm Password</p>
+        <p><input type="password" name="password2"></p>
+
+        <p>Are you an admin?
+           <input type="checkbox" name="is_admin" value="True"></p>
+
+        <p><input type="submit" value="Register"></p>
+    </form>
+    <p>Already have an account? <a href="{% url 'logreg:login' %}">Log in here</a>.</p>
+</body>
+</html>

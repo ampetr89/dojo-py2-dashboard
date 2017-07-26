@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create New User</title>
+</head>
+<body>
+    <header>
+        Hello {{request.session.first_name}}
+        Hello {{request.session.first_name}} <a href="{% url 'users:edit' '' %}">Profile</a>
+        adminlevel: {{request.session.is_admin}}
+        <p><a href="{% url 'dash:home' %}">Home</a>
+        <form action="{% url 'logreg:logout' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Log Out">
+        </form>
+    </header>
+
+    <h4>Enter new user information</h4>
+    <form action="{% url 'logreg:process' 'create' %}" method="POST">
+        {% csrf_token %}
+        <p>First Name</p>
+        <p><input type="text" name="first_name"></p>
+
+        <p>Last Name</p>
+        <p><input type="text" name="last_name"></p>
+
+        <p>Email</p>
+        <p><input type="text" name="email"></p>
+
+        <p>Password</p>
+        <p><input type="password" name="password"></p>
+        <p>Confirm Password</p>
+        <p><input type="password" name="password2"></p>
+
+        <p>Make admin?
+           <input type="checkbox" name="is_admin" value="True"></p>
+
+        <input type="submit" value="Create User">
+    </form>
+</body>
+</html>

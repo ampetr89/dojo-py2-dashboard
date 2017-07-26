@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+</head>
+<body>
+    {% for message in messages %}
+        <p class="{{message.tags}}"> {{message}}</p>
+    {% endfor %}
+
+    <form action="{% url 'logreg:process' 'login' %}" method="POST">
+        {% csrf_token %}
+        
+        <p>Email</p>
+        <p><input type="text" name="email"></p>
+
+        <p>Password</p>
+        <p><input type="password" name="password"></p>
+        
+        <p><input type="submit" value="Log In"></p>
+    </form>
+    <p>Don't have an account? <a href="{% url 'logreg:register' %}">Register here</a>.</p>
+</body>
+</html>

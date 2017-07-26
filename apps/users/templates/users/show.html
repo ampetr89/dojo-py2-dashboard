@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Show User</title>
+</head>
+<body>
+    <header>
+        Hello {{request.session.first_name}}
+        adminlevel: {{request.session.is_admin}}
+        Hello {{request.session.first_name}} <a href="{% url 'users:edit' '' %}">Profile</a>
+        <p><a href="{% url 'dash:home' %}">Home</a>
+        <form action="{% url 'logreg:logout' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Log Out">
+        </form>
+    </header>
+
+    <h1>{{user}}</h1>
+    <p>Registered at: {{user.created_at}}</p>
+    <p>User ID: #{{user.id}}</p>
+    <p>Email address: {{user.email}}</p>
+    <p>Description: {{user.description}}</p>
+    
+    <h3>Leave a message for {{user.first_name}}</h3>
+    <form action="{% url 'users:add_message' user.id %}" method="POST">
+        {% csrf_token %}
+        <textarea name="content" rows="10" cols="50"></textarea>
+        <input type="submit" value="Post Message">
+    </form>
+
+    <section id="messages">
+        {% for message in user.messages_received.all %}
+            <article class="message">
+                <b><a href="{% url 'users:show' message.from_user.id %}">{{message.from_user}}</a></b> wrote:
+                <p>{{message.content}}</p>
+                <p class="ts">{{message.created_at}}</p>
+            </article>
+        {% endfor %}
+    </section>
+</body>
+</html>
