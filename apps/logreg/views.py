@@ -31,7 +31,7 @@ def process(request, form_type):
     
     if form_type == 'login':
         test_user = User(
-            email = request.POST['email'],
+            email = request.POST['email'].lower(),
             password_plaintext = request.POST['password']
         )
         test_user, errors = test_user.login_errors()
@@ -55,7 +55,7 @@ def process(request, form_type):
         test_user = User(
             first_name = request.POST['first_name'],
             last_name = request.POST['last_name'],
-            email = request.POST['email'],
+            email = request.POST['email'].lower(),
             password_plaintext = request.POST['password'],
             is_admin = bool(request.POST.get('is_admin', False))
         )
