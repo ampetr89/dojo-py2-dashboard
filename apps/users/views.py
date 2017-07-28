@@ -17,68 +17,73 @@ def index(request):
 
 def show(request, user_id):
     user = User.objects.get(id=user_id)
-    return render(request, 'users/show.html', {'user': user})
+    return render(request, 'users/show.html', {'user': user, 'is_admin': is_admin(request)})
 
 def edit(request, user_id=None):
-    if user_id:
+    if request.method == 'GET':
+        # show the edit page if it's a GET request
+        if user_id:
+            if not is_admin(request):
+                return redirect('dash:home')
+            
+            user = User.objects.filter(id=user_id)
+            if len(user) == 0:
+                return redirect('dash:home')
+            else:
+                user = user[0]
+        else:
+            user = User.objects.get(id=request.session['user_id'])
+
+        profile = user.id == request.session['user_id']
+        context = {
+            'user': user, 
+            'is_admin': is_admin(request), # if theyre an admin, can change other's info
+            'profile': profile # if theyre editing their own profile, then they can edit the description
+            }
+        return render(request, 'users/edit.html', context)
+
+    elif request.method == 'POST':
+        # posting to this route handles editing the user
         user = User.objects.filter(id=user_id)
         if len(user) == 0:
             return redirect('dash:home')
-        else:
-            user = user[0]
-    else:
-        user = User.objects.get(id=request.session['user_id'])
+        user = user[0]
+        
+        if 'password' in request.POST:
+            # editing password
+            user.password_plaintext = request.POST['password']
+            user, errors = user.edit_pw()
 
-    profile = user.id == request.session['user_id']
-    context = {
-        'user': user, 
-        'is_admin': is_admin(request),
-        'profile': profile
-        }
-    return render(request, 'users/edit.html', context)
+            if request.POST['password'] != request.POST['password2']:
+                errors.append('Passwords do not match')
 
-def update(request, user_id, ud_type):
-    user = User.objects.filter(id=user_id)
-    if len(user) == 0:
-        return redirect('dash:home')
-    user = user[0]
-    if ud_type=='info':
-        user.first_name = request.POST['first_name']
-        user.last_name = request.POST['last_name']
-        # user.email = request.POST['email']
-        if is_admin(request):
-            user.is_admin = request.POST.get('is_admin', False)
-            print('is admin:')
-            print(user.is_admin)
-        user, errors = user.registration_errors(exists_override=True, pw_override=True)
-        if len(errors) == 0:
-            user.save()
-            messages.success(request, 'User info updated.')
+            if len(errors) == 0:
+                user.encrypt_pw()
+                user.save()
+                messages.success(request, 'User password has been updated.')
         else:
+            # editing non-password fields
+            user.first_name = request.POST.get('first_name', user.first_name)
+            user.last_name = request.POST.get('last_name', user.last_name)
+            user.email = request.POST.get('email', user.email)
+            user.is_admin = bool(int(request.POST.get('is_admin', user.is_admin)))
+            user.description = request.POST.get('description', user.description)
+        
+            user, errors = user.edit_info()        
+
+            if len(errors) == 0:
+                user.save()
+                request.session['is_admin'] = user.is_admin
+                
+                print('request.session[is_admin]')
+                print(request.session['is_admin'])
+                messages.success(request, 'User info updated.')
+        
+        if len(errors) > 0:
             for err_msg in errors:
-                messages.error(request, err_msg)
+                messages.error(request, err_msg, extra_tags='danger')
         return redirect('users:edit', user_id)
 
-    elif ud_type=='password':
-        user.password_plaintext = request.POST['password']
-        user, errors = user.registration_errors(exists_override=True)
-        if request.POST['password'] != request.POST['password2']:
-            errors.append('Passwords do not match')
-
-        if len(errors) == 0:
-            user.encrypt_pw()
-            user.save()
-            messages.success(request, 'User password has been updated.')
-        else:
-            for err_msg in errors:
-                messages.error(request, err_msg)
-        return redirect('users:edit', user_id)
-
-    elif ud_type=='description':
-        user.description = request.POST['description']
-        user.save()
-        messages.success(request, 'User description has been updated.')
-        return redirect('users:edit', user_id)
 
 def delete(request, user_id):
     user = User.objects.get(id=user_id)
@@ -86,7 +91,7 @@ def delete(request, user_id):
     return redirect('dash:home')
 
 def new(request):
-    return render(request, 'users/new.html')
+    return render(request, 'users/new.html', {'is_admin': is_admin(request)})
 
 def add_message(request, to_user_id):
     if request.method=='GET':

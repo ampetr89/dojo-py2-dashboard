@@ -8,22 +8,32 @@ def is_admin(request):
     return request.session.get('is_admin', False)
 
 def index(request):
+    print('index hit')
     if is_logged_in(request):
-        if not is_admin(request):
-            context = {
-                'users': User.objects.all()
-            }
+        
+        context = {
+            'users': User.objects.all(),
+            'is_admin': is_admin(request)
+        }
+        return render(request, 'dash/index.html', context)
+        """
+        if not context['is_admin']:
+            
             return render(request, 'dash/index.html', context)
         else:
-            return redirect('dash:admin')
+            return redirect('dash:admin', context)
+        """
     else:
         return redirect('logreg:login')
     
+"""
 def admin(request):
     if is_admin(request):
         context = {
-                'users': User.objects.all()
+                'users': User.objects.all(),
+                'is_admin': True
             }
         return render(request, 'dash/index.html', context)
     else:
         return redirect('dash:index')
+"""

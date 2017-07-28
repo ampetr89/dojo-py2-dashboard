@@ -1,0 +1,20 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+textarea{
+  font-size: 120%;
+  padding: .3em;
+}
+
+textarea.edit{
+  background-color: transparent;
+  border-color: transparent;
+  outline: 1px solid rgb(200,200,200);
+}
+
+.jumbotron h1{
+  font-size: 400%
+}

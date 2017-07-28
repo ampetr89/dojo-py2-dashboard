@@ -1,44 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Create New User</title>
-</head>
-<body>
-    <header>
-        Hello {{request.session.first_name}}
-        Hello {{request.session.first_name}} <a href="{% url 'users:edit' '' %}">Profile</a>
-        adminlevel: {{request.session.is_admin}}
-        <p><a href="{% url 'dash:home' %}">Home</a>
-        <form action="{% url 'logreg:logout' %}" method="POST">
-            {% csrf_token %}
-            <input type="submit" value="Log Out">
-        </form>
-    </header>
+{% extends "logreg/default.html" %}
 
-    <h4>Enter new user information</h4>
+{% block title %}New User{% endblock %}
+
+{% block formtitle %}Enter new user information{% endblock %}
+
+
+{% block header %}
+
+    {% include 'dash/header.html' %}
+
+{% endblock %}
+
+
+{% block form %}
     <form action="{% url 'logreg:process' 'create' %}" method="POST">
         {% csrf_token %}
-        <p>First Name</p>
-        <p><input type="text" name="first_name"></p>
+        <label for="first_name">First Name</label>
+        <input type="text" name="first_name">
 
-        <p>Last Name</p>
-        <p><input type="text" name="last_name"></p>
+        <label for="last_name">Last Name</label>
+        <input type="text" name="last_name">
 
-        <p>Email</p>
-        <p><input type="text" name="email"></p>
+        <label for="email">Email</label>
+        <input type="text" name="email">
 
-        <p>Password</p>
-        <p><input type="password" name="password"></p>
-        <p>Confirm Password</p>
-        <p><input type="password" name="password2"></p>
+        <label for="password">Password</label>
+        <input type="password" name="password">
+        <label for="password2">Confirm Password</label>
+        <input type="password" name="password2">
 
-        <p>Make admin?
-           <input type="checkbox" name="is_admin" value="True"></p>
+        <label for="is_admin">Make admin?</label>
+        <input type="radio" name="is_admin" value="1"> Yes &nbsp;
+        <input type="radio" name="is_admin" value="0"> No
 
-        <input type="submit" value="Create User">
+        <input type="submit" value="Create User" class="btn btn-lg btn-success">
     </form>
-</body>
-</html>
+
+{% endblock %}

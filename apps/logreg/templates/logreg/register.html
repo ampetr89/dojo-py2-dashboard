@@ -1,40 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register</title>
-</head>
-<body>
-    <div class="messages">
-        {% for message in messages %}
-            <p class="{{message.tags}}"> {{message}}</p>
-        {% endfor %}
-    </div>
+{% extends "logreg/default.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block formtitle %}Sign Up for an Account{% endblock %}
+
+
+{% block form%}
+<form action="{% url 'logreg:process' 'registration' %}" method="POST">
+    {% csrf_token %}
+    <label for="first_name">First Name</label>
+    <input type="text" name="first_name">
+
+    <label for="last_name">Last Name</label>
+    <input type="text" name="last_name">
+
+    <label for="email">Email</label>
+    <input type="text" name="email">
+
+    <label for="password">Password</label>
+    <input type="password" name="password">
+    <label for="password2">Confirm Password</label>
+    <input type="password" name="password2">
+
+    <label for="is_admin">Are you an admin?</label>
+    <input type="radio" name="is_admin" value="1"> Yes &nbsp;
+    <input type="radio" name="is_admin" value="0"> No
+
+    <p><input type="submit" class="btn btn-lg btn-success" value="Register"></p>
     
+</form>
+{% endblock %}
 
-    <form action="{% url 'logreg:process' 'registration' %}" method="POST">
-        {% csrf_token %}
-        <p>First Name</p>
-        <p><input type="text" name="first_name"></p>
-
-        <p>Last Name</p>
-        <p><input type="text" name="last_name"></p>
-
-        <p>Email</p>
-        <p><input type="text" name="email"></p>
-
-        <p>Password</p>
-        <p><input type="password" name="password"></p>
-        <p>Confirm Password</p>
-        <p><input type="password" name="password2"></p>
-
-        <p>Are you an admin?
-           <input type="checkbox" name="is_admin" value="True"></p>
-
-        <p><input type="submit" value="Register"></p>
-    </form>
-    <p>Already have an account? <a href="{% url 'logreg:login' %}">Log in here</a>.</p>
-</body>
-</html>
+{% block formcomment %}
+    Already have an account? <a href="{% url 'logreg:login' %}">Log in here</a>.
+{% endblock %}

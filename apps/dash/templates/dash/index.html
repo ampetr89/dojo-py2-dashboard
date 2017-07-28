@@ -1,48 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dashboard</title>
-</head>
+{% extends 'dash/default.html' %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block css %}
+<!-- Bootstrap theme CSS -->
+    {% load staticfiles %}
+    <link href="{% static 'dash/css/dashboard.css' %}" rel="stylesheet">
+{% endblock %}
+   
+{% block jquery %}
+<script>
+    $(document).ready(function(){
+        $('.delete').click(function(e){
+            ok = confirm('Are you sure you would like to delete this user?');
+            console.log(ok);
+            if(!ok){
+                e.preventDefault();
+            }
+            //
+            // TODO lol this doesnt work!
+        })
+    })
+</script>
+{% endblock %}
+
 <body>
     <header>
-        Hello {{request.session.first_name}} <a href="{% url 'users:edit' '' %}">Profile</a>
-        adminlevel: {{request.session.is_admin}}
-
-        <form action="{% url 'logreg:logout' %}" method="POST">
-            {% csrf_token %}
-            <input type="submit" value="Log Out">
-        </form>
+        
     </header>
-    {% for message in messages %}
-        <p class="{{message.tags}}"> {{message}}</p>
-    {% endfor %}
+    <div class="container-fluid">
+        
+        {% block content %}
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Users</h1>
 
+                <div class="row placeholders">
+                    {% for message in messages %}
+                        <p class="alert alert-{{message.tags}} alert-dismissible"> {{message}}</p>
+                        <!-- dismissible feature not working, I think requires another library -->
+                    {% endfor %}
+                </div>
 
-    {% if request.session.is_admin%}
-        <a href="{% url 'users:new' %}">Add User</a>
-    {% endif %}
-    <table>
-        <thead>
-            <th>ID</th> <th>Name</th> <th>Email</th> <th>Created At</th> <th>Is Admin?</th> 
-              {% if request.session.is_admin %}<th>Actions</th>{% endif %}
-        </thead>
-        <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{user.id}}</td> <td><a href="{% url 'users:show' user.id %}">{{user}}</a></td> <td>{{user.email}}</td> 
-                    <td>{{user.created_at}}</td> <td>{{user.is_admin}}</td>
-                     {% if request.session.is_admin %}
-                     <td>
-                        <a href="{% url 'users:edit' user.id %}">Edit</a>
-                        {% if user.id != request.session.user_id %}<a class="delete" href="{% url 'users:delete' user.id %}">Delete</a>{% endif %}
-                     </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                        <thead>
+                            <th>ID</th> <th>Name</th> <th>Email</th> <th>Created At</th> <th>Last Updated</th>
+                            {% if request.session.is_admin %}<th>Actions</th>{% endif %}
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{user.id}}</td> 
+                                    <td>
+                                        <a href="{% url 'users:show' user.id %}">{{user}}</a>
+                                        {% if user.is_admin %}<i class="fa fa-key" aria-hidden="true"></i>{% endif %}
+                                    </td> 
+                                    <td>{{user.email}}</td> 
+                                    <td>{{user.created_at}}</td>
+                                    <td>{{user.updated_at}}</td>
+                                    {% if request.session.is_admin %}
+                                    <td>
+                                        <a href="{% url 'users:edit' user.id %}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                        {% if user.id != request.session.user_id %}
+                                            <a class="delete" href="{% url 'users:delete' user.id %}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+        {% endblock %}
+
+    </div>
+
 </body>
 </html>

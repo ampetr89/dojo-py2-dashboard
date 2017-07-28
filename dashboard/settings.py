@@ -25,7 +25,7 @@ SECRET_KEY = 'vzdyrme@-rrjd63j)^x5bvdd*(5nhki8na_9(n6-atna18%_at'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.203.43.174']
+ALLOWED_HOSTS = ['52.203.43.174', 'localhost']
 
 
 # Application definition
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'dashboard.urls'
 

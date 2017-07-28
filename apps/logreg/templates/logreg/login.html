@@ -1,27 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
-</head>
-<body>
-    {% for message in messages %}
-        <p class="{{message.tags}}"> {{message}}</p>
-    {% endfor %}
+{% extends "logreg/default.html" %}
 
-    <form action="{% url 'logreg:process' 'login' %}" method="POST">
-        {% csrf_token %}
-        
-        <p>Email</p>
-        <p><input type="text" name="email"></p>
+{% block title %}Log In{% endblock %}
 
-        <p>Password</p>
-        <p><input type="password" name="password"></p>
-        
-        <p><input type="submit" value="Log In"></p>
-    </form>
-    <p>Don't have an account? <a href="{% url 'logreg:register' %}">Register here</a>.</p>
-</body>
-</html>
+{% block formtitle %}Hello! Please log in.{% endblock %}
+
+
+{% block form %}
+
+<form action="{% url 'logreg:process' 'login' %}" method="POST">
+    {% csrf_token %}
+    <label for="email">Email</label>
+    <input type="text" name="email">
+
+    <label for="password">Password</label>
+    <input type="password" name="password">
+
+    <p><input type="submit" class="btn btn-lg btn-success" value="Sign In"></p>
+</form>
+{% endblock %}
+
+{% block formcomment %}
+    Don't have an account? <a href="{% url 'logreg:register' %}">Register here</a>.
+{% endblock %}

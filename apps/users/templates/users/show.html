@@ -1,44 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Show User</title>
-</head>
-<body>
-    <header>
-        Hello {{request.session.first_name}}
-        adminlevel: {{request.session.is_admin}}
-        Hello {{request.session.first_name}} <a href="{% url 'users:edit' '' %}">Profile</a>
-        <p><a href="{% url 'dash:home' %}">Home</a>
-        <form action="{% url 'logreg:logout' %}" method="POST">
-            {% csrf_token %}
-            <input type="submit" value="Log Out">
-        </form>
-    </header>
+{% extends "dash/default.html" %}
 
-    <h1>{{user}}</h1>
-    <p>Registered at: {{user.created_at}}</p>
-    <p>User ID: #{{user.id}}</p>
-    <p>Email address: {{user.email}}</p>
-    <p>Description: {{user.description}}</p>
-    
-    <h3>Leave a message for {{user.first_name}}</h3>
-    <form action="{% url 'users:add_message' user.id %}" method="POST">
-        {% csrf_token %}
-        <textarea name="content" rows="10" cols="50"></textarea>
-        <input type="submit" value="Post Message">
-    </form>
+{% block title %}Show User{% endblock %}
 
-    <section id="messages">
+<!-- Bootstrap theme CSS -->
+{% block css %}
+    {% load staticfiles %}
+    <link href="{% static 'users/css/jumbotron.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block sidebar %}
+    <!-- override sidebar -->
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>{{user}}</h1>
+        <p>{{user.description}}</p>
+        
+        <!--<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>-->
+      </div>
+    </div>
+
+    <div class="container">
+        <p>User ID #{{user.id}}</p>
+        <p>Joined on {{user.created_at}}</p>
+        <p>Email address: {{user.email}}</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Leave a message for {{user.first_name}}</h2>
+                <form action="{% url 'users:add_message' user.id %}" method="POST">
+                    {% csrf_token %}
+                    <textarea name="content" rows="4" cols="60"></textarea><br>
+                    <input type="submit" value="Post Message" class="btn btn-primary btn-lg">
+                </form>
+            </div>
+        </div>
+        <h2>{{user.first_name}}'s Inbox</h2>
         {% for message in user.messages_received.all %}
-            <article class="message">
-                <b><a href="{% url 'users:show' message.from_user.id %}">{{message.from_user}}</a></b> wrote:
-                <p>{{message.content}}</p>
-                <p class="ts">{{message.created_at}}</p>
-            </article>
+        <div class="row">
+            <div class="col-md-4">
+            <h4><a href="{% url 'users:show' message.from_user.id %}">{{message.from_user}}</a> wrote:</h4>
+            <p>{{message.content}}</p>
+            <p>{{message.created_at}}</p>
+            </div>
+            
+        </div>
+        {% empty %}
+        <p>No messages yet. Leave a message above!</p>
         {% endfor %}
-    </section>
-</body>
-</html>
+    </div>
+
+    
+
+{% endblock %}

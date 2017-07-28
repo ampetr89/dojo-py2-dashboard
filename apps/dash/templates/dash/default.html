@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{%block title %}{% endblock %}</title>
+
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    
+    {% block css %}
+       
+    {% endblock %}
+
+    <!-- FontAwesome -->
+    <script src="https://use.fontawesome.com/e5e7825618.js"></script>
+
+    {% block jquery %}
+    
+    {% endblock %}
+</head>
+<body>
+    
+    {% include 'dash/header.html' %}
+    
+
+    <div class="container-fluid">
+        {% block sidebar %}
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                
+                <ul class="nav nav-sidebar">
+                    {% if is_admin %}
+                        <li><a href="{% url 'users:new' %}">Create a New User</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endblock %}
+        {% block content %}
+         
+        {% endblock %}
+
+    </div>
+
+</body>
+</html>
