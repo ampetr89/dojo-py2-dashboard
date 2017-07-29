@@ -8,9 +8,13 @@ from django.conf import settings
 fmt = getattr(settings, 'LOG_FORMAT', None)
 lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
 
-logging.basicConfig(format=fmt, level=lvl)
+# logging.basicConfig(format=fmt, level=lvl)
 logging.debug("Logging started on %s for %s" % (logging.root.name, logging.getLevelName(lvl)))
 logger = logging.getLogger('server')
+hdlr = logging.FileHandler('./server.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr) 
 
 def is_logged_in(request):
     return request.session.get('logged_id', False)
