@@ -4,6 +4,7 @@ from .models import User
 from .models import Message
 import logging
 from django.conf import settings
+from dashboard.settings import SERVER_LOG
 
 fmt = getattr(settings, 'LOG_FORMAT', None)
 lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
@@ -11,7 +12,7 @@ lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
 # logging.basicConfig(format=fmt, level=lvl)
 logging.debug("Logging started on %s for %s" % (logging.root.name, logging.getLevelName(lvl)))
 logger = logging.getLogger('server')
-hdlr = logging.FileHandler('./server.log')
+hdlr = logging.FileHandler(SERVER_LOG)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
