@@ -8,7 +8,6 @@ def is_admin(request):
     return request.session.get('is_admin', False)
 
 def index(request):
-    print('index hit')
     if is_logged_in(request):
         
         context = {

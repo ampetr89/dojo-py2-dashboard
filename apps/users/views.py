@@ -2,6 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import User
 from .models import Message
+import logging
+from django.conf import settings
+
+fmt = getattr(settings, 'LOG_FORMAT', None)
+lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
+
+logging.basicConfig(format=fmt, level=lvl)
+logging.debug("Logging started on %s for %s" % (logging.root.name, logging.getLevelName(lvl)))
 
 def is_logged_in(request):
     return request.session.get('logged_id', False)
@@ -20,6 +28,7 @@ def show(request, user_id):
     return render(request, 'users/show.html', {'user': user, 'is_admin': is_admin(request)})
 
 def edit(request, user_id=None):
+    logging.debug('we find ourselves in the edit function')
     if request.method == 'GET':
         # show the edit page if it's a GET request
         if user_id:
@@ -44,6 +53,8 @@ def edit(request, user_id=None):
 
     elif request.method == 'POST':
         # posting to this route handles editing the user
+        logging.debug('we got data!')
+        logging.debug(request.POST)
         user = User.objects.filter(id=user_id)
         if len(user) == 0:
             return redirect('dash:home')
@@ -75,8 +86,7 @@ def edit(request, user_id=None):
                 user.save()
                 request.session['is_admin'] = user.is_admin
                 
-                print('request.session[is_admin]')
-                print(request.session['is_admin'])
+                
                 messages.success(request, 'User info updated.')
         
         if len(errors) > 0:
