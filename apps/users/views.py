@@ -3,19 +3,19 @@ from django.contrib import messages
 from .models import User
 from .models import Message
 import logging
-from django.conf import settings
+
 from dashboard.settings import SERVER_LOG
 
-fmt = getattr(settings, 'LOG_FORMAT', None)
-lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
 
-# logging.basicConfig(format=fmt, level=lvl)
-logging.debug("Logging started on %s for %s" % (logging.root.name, logging.getLevelName(lvl)))
+"""
+
 logger = logging.getLogger('server')
+logger.debug("Logging started for %s" % (SERVER_LOG))
 hdlr = logging.FileHandler(SERVER_LOG)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
+"""
 
 def is_logged_in(request):
     return request.session.get('logged_id', False)
@@ -34,7 +34,8 @@ def show(request, user_id):
     return render(request, 'users/show.html', {'user': user, 'is_admin': is_admin(request)})
 
 def edit(request, user_id=None):
-    logger.debug('we find ourselves in the edit function')
+    print(SERVER_LOG)
+    SERVER_LOG.debug('we find ourselves in the edit function')
     if request.method == 'GET':
         # show the edit page if it's a GET request
         if user_id:
@@ -59,8 +60,8 @@ def edit(request, user_id=None):
 
     elif request.method == 'POST':
         # posting to this route handles editing the user
-        logger.debug('we got data!')
-        logger.debug(request.POST)
+        SERVER_LOG.debug('we got data!')
+        SERVER_LOG.debug(request.POST)
         user = User.objects.filter(id=user_id)
         if len(user) == 0:
             return redirect('dash:home')

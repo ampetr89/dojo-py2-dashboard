@@ -11,11 +11,21 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SERVER_LOG = os.path.join(BASE_DIR,'logs/server.log')
+LOG_FILE_PATH = os.path.join(BASE_DIR,'logs/server.log')
+SERVER_LOG = logging.getLogger('server')
+
+print('running settings.py')
+hdlr = logging.FileHandler(LOG_FILE_PATH)
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+SERVER_LOG.addHandler(hdlr) 
+SERVER_LOG.setLevel(logging.INFO)
+SERVER_LOG.debug("Logging started for %s" % (LOG_FILE_PATH))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
