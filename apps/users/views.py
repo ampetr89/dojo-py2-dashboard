@@ -10,6 +10,7 @@ lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
 
 logging.basicConfig(format=fmt, level=lvl)
 logging.debug("Logging started on %s for %s" % (logging.root.name, logging.getLevelName(lvl)))
+logger = logging.getLogger('server')
 
 def is_logged_in(request):
     return request.session.get('logged_id', False)
@@ -28,7 +29,7 @@ def show(request, user_id):
     return render(request, 'users/show.html', {'user': user, 'is_admin': is_admin(request)})
 
 def edit(request, user_id=None):
-    logging.debug('we find ourselves in the edit function')
+    logger.debug('we find ourselves in the edit function')
     if request.method == 'GET':
         # show the edit page if it's a GET request
         if user_id:
@@ -53,8 +54,8 @@ def edit(request, user_id=None):
 
     elif request.method == 'POST':
         # posting to this route handles editing the user
-        logging.debug('we got data!')
-        logging.debug(request.POST)
+        logger.debug('we got data!')
+        logger.debug(request.POST)
         user = User.objects.filter(id=user_id)
         if len(user) == 0:
             return redirect('dash:home')
